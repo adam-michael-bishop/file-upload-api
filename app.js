@@ -4,13 +4,13 @@ import express from 'express';
 
 const app = express();
 const S3_BUCKET_NAME = "adam-michael-bishop-file-upload-api-bucket";
-const params = {
+const exampleParams = {
   Bucket: S3_BUCKET_NAME, // The name of the bucket. For example, 'sample-bucket-101'.
   Key: "test_upload.txt", // The name of the object. For example, 'sample_upload.txt'.
   Body: "Hello world!", // The content of the object. For example, 'Hello world!".
 };
 
-const run = async () => {
+const run = async (params) => {
   // Create an Amazon S3 bucket.
   try {
     const data = await s3Client.send(
@@ -40,13 +40,11 @@ const run = async () => {
 };
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Hello World!!!!');
 });
 
-app.get('/test', (req, res) => {
-  run();
-});
-
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
+// PORT
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Listening on port ${port}...`);
 });
