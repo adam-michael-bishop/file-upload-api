@@ -1,16 +1,32 @@
 import { PutObjectCommand, CreateBucketCommand, ExpressionType } from "@aws-sdk/client-s3";
 import { s3Client } from "./libs/s3Client.js";
 import express from 'express';
+import multer from 'multer';
+import multerS3 from 'multer-s3';
 
 const app = express();
 const S3_BUCKET_NAME = "adam-michael-bishop-file-upload-api-bucket";
-const exampleParams = {
+const s3 = new S3Client();
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: S3_BUCKET_NAME,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString())
+    }
+  })
+});
+/* const exampleParams = {
   Bucket: S3_BUCKET_NAME, // The name of the bucket. For example, 'sample-bucket-101'.
   Key: "test_upload.txt", // The name of the object. For example, 'sample_upload.txt'.
   Body: "Hello world!", // The content of the object. For example, 'Hello world!".
-};
+}; */
 
-const run = async (params) => {
+/* const run = async (params) => {
   // Create an Amazon S3 bucket.
   try {
     const data = await s3Client.send(
@@ -37,7 +53,7 @@ const run = async (params) => {
   } catch (err) {
     console.log("Error", err);
   }
-};
+}; */
 
 app.get('/', (req, res) => {
   res.send('Hello World!!!!');
